@@ -1,13 +1,13 @@
 from typing import AsyncGenerator
 
 from fastapi import Depends, Header
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import NotFoundException, UnauthorizedException
 from app.core.security import verify_access_token
-from app.core.exceptions import UnauthorizedException, NotFoundException
-from app.db.session import get_db
 from app.db.models import User
+from app.db.session import get_db
 
 
 async def get_current_user(

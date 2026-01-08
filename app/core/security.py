@@ -12,8 +12,7 @@ def create_access_token(
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     expire = datetime.utcnow() + (
-        expires_delta
-        or timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta or timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     to_encode = {
         "sub": user_id,
@@ -32,8 +31,7 @@ def create_refresh_token(
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     expire = datetime.utcnow() + (
-        expires_delta
-        or timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS)
+        expires_delta or timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS)
     )
     to_encode = {
         "sub": user_id,

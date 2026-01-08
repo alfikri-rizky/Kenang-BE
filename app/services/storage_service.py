@@ -31,8 +31,10 @@ class StorageService:
         expires_in_seconds: int = 3600,
     ) -> dict:
         file_extension = file_name.split(".")[-1] if "." in file_name else ""
-        unique_filename = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
-        
+        unique_filename = (
+            f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
+        )
+
         storage_key = f"{folder}/{unique_filename}"
 
         try:

@@ -14,8 +14,8 @@ from app.api.v1.stories.schemas import (
     UpdateTranscriptRequest,
 )
 from app.db.models import User
-from app.services.story_service import StoryService
 from app.services.storage_service import StorageService
+from app.services.story_service import StoryService
 from app.tasks.transcription import transcribe_story_task
 
 router = APIRouter()
@@ -165,7 +165,9 @@ async def get_transcription_status(
 ) -> TranscriptionStatusResponse:
     story_service = StoryService(db)
 
-    status_info = await story_service.get_transcription_status(story_id, current_user.id)
+    status_info = await story_service.get_transcription_status(
+        story_id, current_user.id
+    )
 
     return TranscriptionStatusResponse(
         status=status_info["status"],
@@ -229,7 +231,9 @@ async def retry_transcription(
 ) -> dict:
     story_service = StoryService(db)
 
-    status_info = await story_service.get_transcription_status(story_id, current_user.id)
+    status_info = await story_service.get_transcription_status(
+        story_id, current_user.id
+    )
 
     if status_info["status"] != "failed":
         return {

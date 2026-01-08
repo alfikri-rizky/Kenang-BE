@@ -15,9 +15,11 @@ def setup_logging() -> None:
             structlog.processors.StackInfoRenderer(),
             structlog.dev.set_exc_info,
             structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.JSONRenderer()
-            if settings.is_production
-            else structlog.dev.ConsoleRenderer(),
+            (
+                structlog.processors.JSONRenderer()
+                if settings.is_production
+                else structlog.dev.ConsoleRenderer()
+            ),
         ],
         wrapper_class=structlog.make_filtering_bound_logger(
             logging.DEBUG if settings.APP_DEBUG else logging.INFO
@@ -50,7 +52,9 @@ def mask_sensitive_data(data: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in data.items():
         if key.lower() in sensitive_keys:
             if isinstance(value, str):
-                masked[key] = "****" if len(value) < 8 else f"{value[:2]}****{value[-2:]}"
+                masked[key] = (
+                    "****" if len(value) < 8 else f"{value[:2]}****{value[-2:]}"
+                )
             else:
                 masked[key] = "****"
         else:

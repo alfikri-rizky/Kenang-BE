@@ -58,7 +58,9 @@ class OTPCode(Base, UUIDMixin, TimestampMixin):
     expires_at = Column(DateTime(timezone=True), nullable=False)
     verified_at = Column(DateTime(timezone=True), nullable=True)
     attempts = Column(String(2), default="0", nullable=False)
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    user_id = Column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
 
     user = relationship("User", back_populates="otp_codes")
 

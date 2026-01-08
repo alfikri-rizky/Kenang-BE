@@ -4,7 +4,9 @@ from pydantic import BaseModel, Field
 
 
 class GetPromptsRequest(BaseModel):
-    circle_type: str = Field(..., description="Tipe lingkaran (keluarga, pasangan, sahabat, dll)")
+    circle_type: str = Field(
+        ..., description="Tipe lingkaran (keluarga, pasangan, sahabat, dll)"
+    )
     category: Optional[str] = Field(None, description="Kategori prompts (opsional)")
     count: int = Field(3, ge=1, le=10, description="Jumlah prompts yang diinginkan")
     randomize: bool = Field(True, description="Acak prompts atau tidak")
@@ -17,9 +19,13 @@ class PromptsResponse(BaseModel):
 
 
 class EnhanceStoryRequest(BaseModel):
-    transcript: str = Field(..., min_length=10, description="Transkrip cerita yang akan disempurnakan")
+    transcript: str = Field(
+        ..., min_length=10, description="Transkrip cerita yang akan disempurnakan"
+    )
     circle_type: str = Field(..., description="Tipe lingkaran untuk konteks")
-    context: Optional[str] = Field(None, max_length=500, description="Konteks tambahan (opsional)")
+    context: Optional[str] = Field(
+        None, max_length=500, description="Konteks tambahan (opsional)"
+    )
 
 
 class EnhanceStoryResponse(BaseModel):

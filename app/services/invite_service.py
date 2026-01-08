@@ -116,9 +116,7 @@ class InviteService:
 
         return invite
 
-    async def join_circle_via_invite(
-        self, invite_code: str, user_id: str
-    ) -> Circle:
+    async def join_circle_via_invite(self, invite_code: str, user_id: str) -> Circle:
         invite = await self.validate_invite(invite_code)
 
         existing_query = select(CircleMembership).where(
@@ -159,9 +157,11 @@ class InviteService:
         return circle
 
     async def get_circle_invites(self, circle_id: str) -> list[Invite]:
-        query = select(Invite).where(
-            Invite.circle_id == circle_id
-        ).order_by(Invite.created_at.desc())
+        query = (
+            select(Invite)
+            .where(Invite.circle_id == circle_id)
+            .order_by(Invite.created_at.desc())
+        )
         result = await self.db.execute(query)
         return list(result.scalars().all())
 

@@ -8,7 +8,14 @@ from sqlalchemy.orm import selectinload
 
 from app.core.config import settings
 from app.core.exceptions import BusinessException, ForbiddenException, NotFoundException
-from app.db.models import MemberRole, Photo, Story, SubscriptionTier, TranscriptionStatus, User
+from app.db.models import (
+    MemberRole,
+    Photo,
+    Story,
+    SubscriptionTier,
+    TranscriptionStatus,
+    User,
+)
 from app.services.circle_service import CircleService
 from app.services.storage_service import StorageService
 
@@ -29,9 +36,8 @@ class StoryService:
         if not user:
             raise NotFoundException("Pengguna tidak ditemukan")
 
-        count_query = (
-            select(func.count(Story.id))
-            .where(Story.recorded_by == user_id, Story.deleted_at.is_(None))
+        count_query = select(func.count(Story.id)).where(
+            Story.recorded_by == user_id, Story.deleted_at.is_(None)
         )
         count_result = await self.db.execute(count_query)
         current_stories = count_result.scalar() or 0
@@ -70,7 +76,9 @@ class StoryService:
 
         file_exists = await self.storage_service.verify_file_exists(audio_storage_key)
         if not file_exists:
-            raise NotFoundException("Audio tidak ditemukan di storage. Upload mungkin gagal.")
+            raise NotFoundException(
+                "Audio tidak ditemukan di storage. Upload mungkin gagal."
+            )
 
         if photo_id:
             photo_query = select(Photo).where(
@@ -149,8 +157,7 @@ class StoryService:
         total = count_result.scalar() or 0
 
         stories_query = (
-            base_query
-            .options(selectinload(Story.photo), selectinload(Story.recorder))
+            base_query.options(selectinload(Story.photo), selectinload(Story.recorder))
             .order_by(Story.created_at.desc())
             .offset(skip)
             .limit(limit)

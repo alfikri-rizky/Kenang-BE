@@ -80,7 +80,9 @@ class ImageProcessor:
                 background = Image.new("RGB", img.size, (255, 255, 255))
                 if img.mode == "P":
                     img = img.convert("RGBA")
-                background.paste(img, mask=img.split()[-1] if img.mode == "RGBA" else None)
+                background.paste(
+                    img, mask=img.split()[-1] if img.mode == "RGBA" else None
+                )
                 img = background
 
             max_dimension = ImageProcessor.MAX_DIMENSION
@@ -120,7 +122,9 @@ class ImageProcessor:
                 background = Image.new("RGB", img.size, (255, 255, 255))
                 if img.mode == "P":
                     img = img.convert("RGBA")
-                background.paste(img, mask=img.split()[-1] if img.mode == "RGBA" else None)
+                background.paste(
+                    img, mask=img.split()[-1] if img.mode == "RGBA" else None
+                )
                 img = background
 
             img.thumbnail(size, Image.Resampling.LANCZOS)
@@ -165,9 +169,11 @@ class FileHasher:
     @staticmethod
     def calculate_hash(file_bytes: bytes) -> str:
         import hashlib
+
         return hashlib.sha256(file_bytes).hexdigest()
 
     @staticmethod
     def calculate_md5(file_bytes: bytes) -> str:
         import hashlib
+
         return hashlib.md5(file_bytes).hexdigest()

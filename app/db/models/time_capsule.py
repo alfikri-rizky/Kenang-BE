@@ -36,7 +36,9 @@ class TimeCapsule(Base, UUIDMixin, TimestampMixin):
         String(20), default=RecipientType.ALL_MEMBERS.value, nullable=False
     )
     recipient_user_ids = Column(ARRAY(String(36)), nullable=True)
-    status = Column(String(20), default=TimeCapsuleStatus.SCHEDULED.value, nullable=False)
+    status = Column(
+        String(20), default=TimeCapsuleStatus.SCHEDULED.value, nullable=False
+    )
     delivered_at = Column(DateTime(timezone=True), nullable=True)
 
     circle = relationship("Circle", back_populates="time_capsules")

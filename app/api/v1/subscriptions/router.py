@@ -4,6 +4,7 @@ API router for subscription and payment endpoints.
 
 from typing import List
 
+import structlog
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,7 +25,6 @@ from app.db.models import User
 from app.db.models.subscription import Payment, PaymentProvider, PaymentStatus
 from app.services.payment_service import PaymentService
 from app.services.subscription_service import SubscriptionService
-import structlog
 
 router = APIRouter()
 logger = structlog.get_logger(__name__)

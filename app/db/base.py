@@ -1,7 +1,8 @@
+import uuid
+
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import DeclarativeBase, declared_attr
 from sqlalchemy.sql import func
-import uuid
 
 
 class Base(DeclarativeBase):

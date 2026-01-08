@@ -86,12 +86,11 @@ async def get_my_circles(
     circle_responses = []
     for circle in circles:
         stats = await circle_service.get_circle_stats(circle.id)
-        
+
         user_membership = next(
-            (m for m in circle.memberships if m.user_id == current_user.id),
-            None
+            (m for m in circle.memberships if m.user_id == current_user.id), None
         )
-        
+
         circle_responses.append(
             CircleResponse(
                 id=circle.id,
@@ -163,8 +162,7 @@ async def get_circle_detail(
         )
 
     user_membership = next(
-        (m for m in memberships if m.user_id == current_user.id),
-        None
+        (m for m in memberships if m.user_id == current_user.id), None
     )
 
     return CircleDetailResponse(
@@ -211,10 +209,9 @@ async def update_circle(
     )
 
     stats = await circle_service.get_circle_stats(circle_id)
-    
+
     user_membership = next(
-        (m for m in circle.memberships if m.user_id == current_user.id),
-        None
+        (m for m in circle.memberships if m.user_id == current_user.id), None
     )
 
     return CircleResponse(
@@ -417,7 +414,9 @@ async def create_invite(
     db: AsyncSession = Depends(get_db),
 ) -> InviteResponse:
     circle_service = CircleService(db)
-    await circle_service._check_access(circle_id, current_user.id, required_role="admin")
+    await circle_service._check_access(
+        circle_id, current_user.id, required_role="admin"
+    )
 
     invite_service = InviteService(db)
     invite = await invite_service.create_invite(
