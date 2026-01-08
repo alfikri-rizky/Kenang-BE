@@ -1,0 +1,51 @@
+name: Auto Merge PR
+
+on:
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  status: {}
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Check if ready to merge
+      id: check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        # Check if all checks passed
+        gh pr checks $PR_NUMBER --watch || echo "Some checks still running"
+        
+        # Check if approved
+        APPROVALS=$(gh pr view $PR_NUMBER --json reviewDecision --jq '.reviewDecision')
+        echo "Review status: $APPROVALS"
+        
+        if [ "$APPROVALS" = "APPROVED" ]; then
+          echo "ready=true" >> $GITHUB_OUTPUT
+        else
+          echo "ready=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Enable auto-merge
+      if: steps.check.outputs.ready == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        gh pr merge $PR_NUMBER --auto --squash --delete-branch
+        echo "✅ Auto-merge enabled for PR #$PR_NUMBER"
+    
+    - name: Merge PR
+      if: steps.check.outputs.ready == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        gh pr merge $PR_NUMBER --squash --delete-branch --admin
+        echo "✅ PR #$PR_NUMBER merged successfully"
