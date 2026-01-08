@@ -23,7 +23,9 @@ class PaymentService:
 
     def __init__(self):
         if not settings.MIDTRANS_SERVER_KEY or not settings.MIDTRANS_CLIENT_KEY:
-            logger.warning("midtrans_not_configured", message="Midtrans API keys not set")
+            logger.warning(
+                "midtrans_not_configured", message="Midtrans API keys not set"
+            )
             self.snap = None
         else:
             self.snap = midtransclient.Snap(
@@ -181,11 +183,15 @@ class PaymentService:
             True if signature is valid, False otherwise
         """
         if not settings.MIDTRANS_SERVER_KEY:
-            logger.error("signature_verification_failed", reason="Server key not configured")
+            logger.error(
+                "signature_verification_failed", reason="Server key not configured"
+            )
             return False
 
         # Create signature string: order_id + status_code + gross_amount + server_key
-        signature_string = f"{order_id}{status_code}{gross_amount}{settings.MIDTRANS_SERVER_KEY}"
+        signature_string = (
+            f"{order_id}{status_code}{gross_amount}{settings.MIDTRANS_SERVER_KEY}"
+        )
 
         # Generate SHA512 hash
         calculated_signature = hashlib.sha512(signature_string.encode()).hexdigest()

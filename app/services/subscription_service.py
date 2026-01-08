@@ -38,7 +38,9 @@ class SubscriptionService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_available_plans(self, include_free: bool = False) -> List[SubscriptionPlan]:
+    async def get_available_plans(
+        self, include_free: bool = False
+    ) -> List[SubscriptionPlan]:
         """
         Get list of available subscription plans.
 

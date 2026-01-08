@@ -264,7 +264,11 @@ def get_all_plans() -> List[SubscriptionPlan]:
 
 def get_purchasable_plans() -> List[SubscriptionPlan]:
     """Get plans that can be purchased (exclude FREE)"""
-    return [plan for plan in SUBSCRIPTION_PLANS.values() if plan.plan_id != PlanId.FREE.value]
+    return [
+        plan
+        for plan in SUBSCRIPTION_PLANS.values()
+        if plan.plan_id != PlanId.FREE.value
+    ]
 
 
 def get_plan_price(plan_id: str) -> int:

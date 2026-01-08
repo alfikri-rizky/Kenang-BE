@@ -136,7 +136,9 @@ async def get_current_subscription(
     subscription = await subscription_service.get_current_subscription(current_user.id)
 
     if not subscription:
-        raise NotFoundException("Subscription tidak ditemukan. Kamu sedang menggunakan paket gratis.")
+        raise NotFoundException(
+            "Subscription tidak ditemukan. Kamu sedang menggunakan paket gratis."
+        )
 
     return SubscriptionResponse(
         id=subscription.id,
@@ -280,16 +282,23 @@ async def midtrans_webhook(
         # Find payment by order_id (stored in payment_provider_transaction_id)
         from sqlalchemy import select
 
-        query = select(Payment).where(Payment.payment_provider_transaction_id == order_id)
+        query = select(Payment).where(
+            Payment.payment_provider_transaction_id == order_id
+        )
         result = await db.execute(query)
         payment = result.scalar_one_or_none()
 
         if not payment:
             logger.error("webhook_payment_not_found", order_id=order_id)
-            raise NotFoundException(f"Pembayaran dengan order_id {order_id} tidak ditemukan")
+            raise NotFoundException(
+                f"Pembayaran dengan order_id {order_id} tidak ditemukan"
+            )
 
         # Check for duplicate notification (idempotency)
-        if payment.status == PaymentStatus.SUCCESS.value and payment_status == "success":
+        if (
+            payment.status == PaymentStatus.SUCCESS.value
+            and payment_status == "success"
+        ):
             logger.info("webhook_duplicate_success", order_id=order_id)
             return WebhookResponse(
                 status="ok",
@@ -305,7 +314,9 @@ async def midtrans_webhook(
             from datetime import datetime
 
             payment.completed_at = datetime.utcnow()
-            payment.payment_method = payment_service.map_midtrans_payment_type(payment_type)
+            payment.payment_method = payment_service.map_midtrans_payment_type(
+                payment_type
+            )
 
         await db.flush()
 
