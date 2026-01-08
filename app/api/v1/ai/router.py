@@ -29,14 +29,14 @@ async def get_prompts(
     current_user: User = Depends(get_current_user),
 ) -> PromptsResponse:
     ai_service = AIService()
-    
+
     prompts = ai_service.get_circle_prompts(
         circle_type=request.circle_type,
         category=request.category,
         count=request.count,
         randomize=request.randomize,
     )
-    
+
     return PromptsResponse(
         prompts=prompts,
         circle_type=request.circle_type,
@@ -56,13 +56,13 @@ async def enhance_story(
     current_user: User = Depends(get_current_user),
 ) -> EnhanceStoryResponse:
     ai_service = AIService()
-    
+
     result = await ai_service.enhance_story_transcript(
         transcript=request.transcript,
         circle_type=request.circle_type,
         context=request.context,
     )
-    
+
     return EnhanceStoryResponse(
         enhanced_text=result["enhanced_text"],
         improvements=result.get("improvements", []),
@@ -84,13 +84,13 @@ async def generate_follow_up_questions(
     current_user: User = Depends(get_current_user),
 ) -> FollowUpQuestionsResponse:
     ai_service = AIService()
-    
+
     questions = await ai_service.generate_follow_up_questions(
         transcript=request.transcript,
         circle_type=request.circle_type,
         count=request.count,
     )
-    
+
     return FollowUpQuestionsResponse(
         questions=questions,
         circle_type=request.circle_type,
@@ -109,10 +109,10 @@ async def suggest_title(
     current_user: User = Depends(get_current_user),
 ) -> SuggestTitleResponse:
     ai_service = AIService()
-    
+
     title = await ai_service.suggest_story_title(
         transcript=request.transcript,
         max_length=request.max_length,
     )
-    
+
     return SuggestTitleResponse(title=title)

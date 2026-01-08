@@ -93,7 +93,9 @@ class CircleMembership(Base, UUIDMixin, TimestampMixin):
     )
 
     circle = relationship("Circle", back_populates="memberships")
-    user = relationship("User", back_populates="circle_memberships", foreign_keys=[user_id])
+    user = relationship(
+        "User", back_populates="circle_memberships", foreign_keys=[user_id]
+    )
     inviter = relationship("User", foreign_keys=[invited_by])
 
     __table_args__ = (

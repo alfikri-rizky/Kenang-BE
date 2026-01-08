@@ -6,15 +6,27 @@ from pydantic import BaseModel, Field
 
 class CreateStoryRequest(BaseModel):
     circle_id: str = Field(..., description="ID lingkaran tempat cerita dibuat")
-    audio_storage_key: str = Field(..., description="Storage key audio yang sudah diupload ke S3")
-    photo_id: Optional[str] = Field(None, description="ID foto yang terkait dengan cerita (opsional)")
-    prompt_used: Optional[str] = Field(None, max_length=500, description="Prompt yang digunakan untuk memandu rekaman")
-    audio_duration_seconds: Optional[int] = Field(None, ge=1, le=600, description="Durasi audio dalam detik")
-    language: str = Field("id", max_length=10, description="Kode bahasa untuk transkripsi (default: id)")
+    audio_storage_key: str = Field(
+        ..., description="Storage key audio yang sudah diupload ke S3"
+    )
+    photo_id: Optional[str] = Field(
+        None, description="ID foto yang terkait dengan cerita (opsional)"
+    )
+    prompt_used: Optional[str] = Field(
+        None, max_length=500, description="Prompt yang digunakan untuk memandu rekaman"
+    )
+    audio_duration_seconds: Optional[int] = Field(
+        None, ge=1, le=600, description="Durasi audio dalam detik"
+    )
+    language: str = Field(
+        "id", max_length=10, description="Kode bahasa untuk transkripsi (default: id)"
+    )
 
 
 class UpdateTranscriptRequest(BaseModel):
-    transcript_edited: str = Field(..., min_length=1, description="Transkrip yang sudah diedit")
+    transcript_edited: str = Field(
+        ..., min_length=1, description="Transkrip yang sudah diedit"
+    )
 
 
 class RecorderInfo(BaseModel):
@@ -68,6 +80,8 @@ class StoryListResponse(BaseModel):
 
 
 class TranscriptionStatusResponse(BaseModel):
-    status: str = Field(..., description="Status transkripsi: pending, processing, completed, failed")
+    status: str = Field(
+        ..., description="Status transkripsi: pending, processing, completed, failed"
+    )
     error: Optional[str] = Field(None, description="Pesan error jika status failed")
     has_transcript: bool = Field(..., description="Apakah sudah ada transkrip")

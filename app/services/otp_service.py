@@ -21,9 +21,7 @@ class OTPService:
         self.db = db
 
     def _generate_otp_code(self) -> str:
-        return "".join(
-            random.choices(string.digits, k=settings.OTP_LENGTH)
-        )
+        return "".join(random.choices(string.digits, k=settings.OTP_LENGTH))
 
     async def _count_recent_attempts(self, phone_number: str) -> int:
         one_hour_ago = datetime.utcnow() - timedelta(hours=1)
@@ -36,11 +34,15 @@ class OTPService:
 
     async def _get_active_otp(self, phone_number: str) -> Optional[OTPCode]:
         now = datetime.utcnow()
-        query = select(OTPCode).where(
-            OTPCode.phone_number == phone_number,
-            OTPCode.expires_at > now,
-            OTPCode.verified_at.is_(None),
-        ).order_by(OTPCode.created_at.desc())
+        query = (
+            select(OTPCode)
+            .where(
+                OTPCode.phone_number == phone_number,
+                OTPCode.expires_at > now,
+                OTPCode.verified_at.is_(None),
+            )
+            .order_by(OTPCode.created_at.desc())
+        )
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
@@ -52,9 +54,7 @@ class OTPService:
                 phone=mask_phone(phone_number),
                 attempts=recent_attempts,
             )
-            raise RateLimitException(
-                "Terlalu banyak percobaan. Coba lagi dalam 1 jam."
-            )
+            raise RateLimitException("Terlalu banyak percobaan. Coba lagi dalam 1 jam.")
 
         existing_otp = await self._get_active_otp(phone_number)
         if existing_otp:

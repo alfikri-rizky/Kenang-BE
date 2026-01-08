@@ -56,7 +56,9 @@ class Subscription(Base, UUIDMixin, TimestampMixin):
         String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     plan_id = Column(String(50), nullable=False)
-    status = Column(String(20), default=SubscriptionStatus.PENDING.value, nullable=False)
+    status = Column(
+        String(20), default=SubscriptionStatus.PENDING.value, nullable=False
+    )
     payment_provider = Column(String(20), nullable=True)
     payment_provider_subscription_id = Column(String(255), nullable=True)
     current_period_start = Column(DateTime(timezone=True), nullable=True)

@@ -5,14 +5,18 @@ from openai import AsyncOpenAI
 
 from app.core.config import settings
 from app.core.exceptions import BusinessException
-from app.data.ai_prompts import get_random_prompts, get_prompts_by_circle_type
+from app.data.ai_prompts import get_prompts_by_circle_type, get_random_prompts
 
 logger = structlog.get_logger(__name__)
 
 
 class AIService:
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+        self.client = (
+            AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+            if settings.OPENAI_API_KEY
+            else None
+        )
 
     def get_circle_prompts(
         self,
@@ -23,16 +27,16 @@ class AIService:
     ) -> List[str]:
         if randomize:
             return get_random_prompts(circle_type, count)
-        
+
         prompts_dict = get_prompts_by_circle_type(circle_type)
-        
+
         if category and category in prompts_dict:
             return prompts_dict[category][:count]
-        
+
         all_prompts = []
         for category_prompts in prompts_dict.values():
             all_prompts.extend(category_prompts)
-        
+
         return all_prompts[:count]
 
     async def enhance_story_transcript(
@@ -49,7 +53,7 @@ class AIService:
 
         try:
             circle_context = self._get_circle_context(circle_type)
-            
+
             system_prompt = f"""Kamu adalah asisten AI yang membantu menyempurnakan cerita kenangan dalam Bahasa Indonesia.
 
 Konteks: {circle_context}
@@ -69,7 +73,7 @@ Kembalikan dalam format JSON:
 }}"""
 
             user_prompt = f"Transkrip asli:\n\n{transcript}"
-            
+
             if context:
                 user_prompt += f"\n\nKonteks tambahan: {context}"
 
@@ -84,6 +88,7 @@ Kembalikan dalam format JSON:
             )
 
             import json
+
             result = json.loads(response.choices[0].message.content)
 
             logger.info(
@@ -120,7 +125,7 @@ Kembalikan dalam format JSON:
 
         try:
             circle_context = self._get_circle_context(circle_type)
-            
+
             system_prompt = f"""Kamu adalah pewawancara yang empati dan penuh perhatian dalam Bahasa Indonesia.
 
 Konteks: {circle_context}
@@ -147,8 +152,9 @@ Format: Return array JSON dengan {count} pertanyaan."""
             )
 
             import json
+
             result = json.loads(response.choices[0].message.content)
-            
+
             questions = result.get("questions", [])
 
             logger.info(
@@ -217,6 +223,7 @@ Return JSON: {"title": "judul cerita"}"""
             )
 
             import json
+
             result = json.loads(response.choices[0].message.content)
             title = result.get("title", transcript[:max_length])
 

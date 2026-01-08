@@ -169,7 +169,9 @@ class CircleService:
         cover_photo_url: Optional[str] = None,
         privacy: Optional[str] = None,
     ) -> Circle:
-        await self._check_access(circle_id, user_id, required_role=MemberRole.ADMIN.value)
+        await self._check_access(
+            circle_id, user_id, required_role=MemberRole.ADMIN.value
+        )
 
         circle = await self.get_circle_by_id(circle_id)
 
@@ -191,7 +193,9 @@ class CircleService:
         return circle
 
     async def delete_circle(self, circle_id: str, user_id: str) -> None:
-        await self._check_access(circle_id, user_id, required_role=MemberRole.ADMIN.value)
+        await self._check_access(
+            circle_id, user_id, required_role=MemberRole.ADMIN.value
+        )
 
         circle = await self.get_circle_by_id(circle_id)
         circle.deleted_at = datetime.utcnow()
@@ -208,7 +212,9 @@ class CircleService:
         role: str = MemberRole.CONTRIBUTOR.value,
         custom_label: Optional[str] = None,
     ) -> Tuple[Optional[CircleMembership], Optional[CircleMember]]:
-        await self._check_access(circle_id, admin_user_id, required_role=MemberRole.ADMIN.value)
+        await self._check_access(
+            circle_id, admin_user_id, required_role=MemberRole.ADMIN.value
+        )
 
         if user_id:
             existing_query = select(CircleMembership).where(
@@ -291,7 +297,9 @@ class CircleService:
         role: Optional[str] = None,
         custom_label: Optional[str] = None,
     ) -> CircleMembership:
-        await self._check_access(circle_id, admin_user_id, required_role=MemberRole.ADMIN.value)
+        await self._check_access(
+            circle_id, admin_user_id, required_role=MemberRole.ADMIN.value
+        )
 
         query = select(CircleMembership).where(CircleMembership.id == membership_id)
         result = await self.db.execute(query)
@@ -320,7 +328,9 @@ class CircleService:
     async def remove_member(
         self, circle_id: str, membership_id: str, admin_user_id: str
     ) -> None:
-        await self._check_access(circle_id, admin_user_id, required_role=MemberRole.ADMIN.value)
+        await self._check_access(
+            circle_id, admin_user_id, required_role=MemberRole.ADMIN.value
+        )
 
         query = select(CircleMembership).where(CircleMembership.id == membership_id)
         result = await self.db.execute(query)

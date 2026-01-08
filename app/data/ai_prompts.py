@@ -144,11 +144,13 @@ def get_prompts_by_circle_type(circle_type: str) -> Dict[str, List[str]]:
 
 def get_all_prompts_flat(circle_type: str) -> List[str]:
     prompts = get_prompts_by_circle_type(circle_type)
-    return [prompt for category_prompts in prompts.values() for prompt in category_prompts]
+    return [
+        prompt for category_prompts in prompts.values() for prompt in category_prompts
+    ]
 
 
 def get_random_prompts(circle_type: str, count: int = 3) -> List[str]:
     import random
-    
+
     all_prompts = get_all_prompts_flat(circle_type)
     return random.sample(all_prompts, min(count, len(all_prompts)))

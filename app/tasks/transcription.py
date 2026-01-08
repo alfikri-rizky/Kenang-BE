@@ -110,6 +110,7 @@ async def _retry_failed_transcription(task, story_id: str) -> dict:
         story_service = StoryService(db)
 
         from sqlalchemy import select
+
         from app.db.models import Story
 
         query = select(Story).where(Story.id == story_id)

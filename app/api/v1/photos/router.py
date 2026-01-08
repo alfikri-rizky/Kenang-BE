@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, get_db
@@ -19,7 +20,6 @@ from app.db.models import Photo, User
 from app.services.circle_service import CircleService
 from app.services.storage_service import StorageService
 from app.utils.file_utils import FileValidator
-from sqlalchemy import select
 
 router = APIRouter()
 
@@ -48,7 +48,7 @@ async def get_photo_upload_url(
         )
 
     storage_service = StorageService()
-    
+
     allowed_types = storage_service.get_allowed_image_types()
     if not storage_service.validate_content_type(request.content_type, allowed_types):
         raise BusinessException(
@@ -57,7 +57,7 @@ async def get_photo_upload_url(
         )
 
     folder = f"photos/{request.circle_id}"
-    
+
     upload_data = await storage_service.generate_upload_url(
         file_name=request.filename,
         content_type=request.content_type,
@@ -86,10 +86,12 @@ async def confirm_photo_upload(
     )
 
     storage_service = StorageService()
-    
+
     file_exists = await storage_service.verify_file_exists(request.storage_key)
     if not file_exists:
-        raise NotFoundException("File tidak ditemukan di storage. Upload mungkin gagal.")
+        raise NotFoundException(
+            "File tidak ditemukan di storage. Upload mungkin gagal."
+        )
 
     metadata = await storage_service.get_file_metadata(request.storage_key)
 
@@ -342,7 +344,7 @@ async def get_audio_upload_url(
         )
 
     storage_service = StorageService()
-    
+
     allowed_types = storage_service.get_allowed_audio_types()
     if not storage_service.validate_content_type(request.content_type, allowed_types):
         raise BusinessException(
@@ -351,7 +353,7 @@ async def get_audio_upload_url(
         )
 
     folder = f"audio/{request.circle_id}"
-    
+
     upload_data = await storage_service.generate_upload_url(
         file_name=request.filename,
         content_type=request.content_type,
