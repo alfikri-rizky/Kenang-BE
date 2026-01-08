@@ -1,3 +1,4 @@
+from app.services.ai_service import AIService
 from app.services.auth_service import AuthService
 from app.services.circle_service import CircleService
 from app.services.invite_service import InviteService
@@ -8,6 +9,7 @@ from app.services.transcription_service import TranscriptionService
 from app.services.user_service import UserService
 
 __all__ = [
+    "AIService",
     "AuthService",
     "CircleService",
     "InviteService",
